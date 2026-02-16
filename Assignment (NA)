@@ -1,0 +1,165 @@
+CCNA Day 4 Assignment:
+
+S1 - File Server (FINANCE)
+S2 - DNS Server
+P1 - Finance PC;  P1v2 - Finance PC
+P2 - IT PC; P2v2 - IT PC
+
+
+### SETUP OSPF
+
+!@P1
+conf t
+ hostname PC-FINANCE
+ int e0/0
+  ip add 10.2.3.11 255.255.255.224
+  ip add 10.2.3.12 255.255.255.224 secondary
+  no shut
+ !
+ ip route 0.0.0.0 0.0.0.0 10.2.3.1 10
+ ip route 0.0.0.0 0.0.0.0 10.2.3.2 20
+ end
+
+
+!@P2
+conf t
+ hostname PC-IT
+ int e1/0
+  ip add 10.2.4.11 255.255.255.240
+  ip add 10.2.4.12 255.255.255.240 secondary
+  no shut
+ !
+ ip route 0.0.0.0 0.0.0.0 10.2.4.2 10
+ ip route 0.0.0.0 0.0.0.0 10.2.4.1 20
+ end
+
+
+!@S1
+conf t
+ hostname S1-FILE
+ int e1/0
+  ip add 192.168.1.133 255.255.255.224
+  no shut
+ !
+ ip route 0.0.0.0 0.0.0.0 192.168.1.129
+  end
+
+
+!@S2
+conf t
+ hostname S2-DNS
+ int e1/0
+  ip add 10.2.2.133 255.255.255.0
+  no shut
+ !
+ ip route 0.0.0.0 0.0.0.0 10.2.2.2
+  end
+  
+ 
+!@A1
+conf t
+ int e0/0
+  switchport access vlan 30
+  end
+
+
+!@A2
+conf t
+ int e1/0
+  switchport access vlan 40
+  end
+  
+  
+!@D1
+conf t
+ vlan 30
+  name FINANCE
+ vlan 40
+  name IT
+ !
+ int vlan 30
+  ip add 10.2.3.1 255.255.255.224
+  no shut
+ int vlan 40
+  ip add 10.2.4.1 255.255.255.240
+  no shut
+ !
+ router ospf 1
+  router-id 10.1.4.6
+  network 10.2.1.0      0.0.0.255 area 0
+  network 10.2.2.0      0.0.0.255 area 0
+  network 192.168.1.128 0.0.0.31  area 0
+  network 10.1.4.4      0.0.0.3   area 0
+  !
+  network 10.2.3.0      0.0.0.31 area 0
+  network 10.2.4.0      0.0.0.15 area 0
+ !
+ int e1/0
+  switchport access vlan 100
+  end
+ 
+!@D2
+conf t
+ int vlan 30
+  ip add 10.2.3.2 255.255.255.224
+  no shut
+ int vlan 40
+  ip add 10.2.4.2 255.255.255.240
+  no shut
+ !
+ router ospf 1
+  router-id 10.1.4.10
+  network 10.2.1.0      0.0.0.255 area 0
+  network 10.2.2.0      0.0.0.255 area 0
+  network 192.168.1.128 0.0.0.31  area 0
+  network 10.1.4.8      0.0.0.3   area 0  
+  !
+  network 10.2.3.0      0.0.0.31 area 0
+  network 10.2.4.0      0.0.0.15 area 0
+ !
+ int e1/0
+  switchport access vlan 20
+  end
+
+!@R4
+conf t
+ router ospf 1
+  network 10.1.4.4      0.0.0.3   area 0
+  network 10.1.4.8      0.0.0.3   area 0
+  network 4.4.4.4       0.0.0.0   area 0
+  end
+  
+
+
+### NETWORK SEGMENTATION
+Configure various ACLs to achieve the ff:
+
+1. On S1, configure a STANDARD ACL named FWP-S1-INT so that only PCs in FINANCE can access the FILE SERVER
+
+!@S1
+conf t
+ ip access-list standard FWP-S1
+  permit 10.2.3.0 0.0.0.31
+  
+ int e1/0
+  ip access-group FWP-S1 in
+  end
+
+
+2. On S1, configure an EXTENDED ACL named FWP-S1-VTY to prevent SSH
+  
+
+
+1. S1 (File Server) should only be accessible to FINANCE   (SVI)
+2. Finance (P1 & P1v2) can only ping each.                 (SVI)
+
+3. Use a standard ACL so that IT must be the only ones that can remotely connect to R4
+
+4. Do not allow TELNET from P2 on D1
+5. Do not allow SSH from P2v2 on D2
+6. Allow TELNET & SSH from IT to R4
+
+7. IT Can PING, TELNET, & SSH Finance but not the other way around.
+
+
+
