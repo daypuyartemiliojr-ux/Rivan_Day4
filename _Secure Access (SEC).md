@@ -1,5 +1,5 @@
 
-<!--   Your Monitor Number  =  15  -->
+<!--   Your Monitor Number  =  51  -->
 
 ## Review on IPv4 Essentials
 
@@ -20,7 +20,7 @@
 | Dept       | Network             | Infected Hosts      |
 | ---        | ---                 | ---                 |
 | ADMIN      | 192.168.192.0       | 192.168.200.54  /18 |
-| HR         | 192.168.128.0       | 192.168.130.115 /20 | 
+| HR         | 192.168.128.0       | 192.168.130.151 /20 | 
 | FINANCE    | 192.168.126.96      | 192.168.126.100 /27 |
 | SOC        | 192.168.120.0       | 192.168.122.187 /22 |
 | NOC        | 192.168.126.136     | 192.168.126.140 /29 |
@@ -98,7 +98,7 @@ conf t
   no shut
   exit
  int g4
-  ip add 10.15.1.11 255.255.255.0
+  ip add 10.51.1.11 255.255.255.0
   no shut
   exit
  !
@@ -107,7 +107,7 @@ conf t
  ip domain lookup
  ip name-server 8.8.8.8 1.1.1.1
  !
- username admin privilege 15 secret pass
+ username admin privilege 51 secret pass
  ip http server
  ip http secure-server
  ip http authentication local
@@ -147,7 +147,7 @@ conf t
  ip domain lookup
  ip name-server 8.8.8.8 1.1.1.1
  !
- username admin privilege 15 secret pass
+ username admin privilege 51 secret pass
  ip http server
  ip http secure-server
  ip http authentication local
@@ -264,14 +264,14 @@ type ethernet \
 con-name BRIDGED \
 ifname ens256 \
 ipv4.method manual \
-ipv4.addresses 10.15.1.6/24 \
+ipv4.addresses 10.51.1.6/24 \
 autoconnect yes
 
 nmcli connection up BRIDGED
 
 
-ip route add 10.0.0.0/8 via 10.15.1.4 dev ens256
-ip route add 200.0.0.0/24 via 10.15.1.4 dev ens256
+ip route add 10.0.0.0/8 via 10.51.1.4 dev ens256
+ip route add 200.0.0.0/24 via 10.51.1.4 dev ens256
 ip route add 0.0.0.0/0 via 11.11.11.113 dev ens224
 ~~~
 
@@ -297,12 +297,12 @@ ip route add 0.0.0.0/0 via 11.11.11.113 dev ens224
 <br>
 
 
-__Make Sure EDGE-15 is Configured__
+__Make Sure EDGE-51 is Configured__
 
 ~~~
-!@EDGE-15
+!@EDGE-51
 conf t
- hostname EDGE-15
+ hostname EDGE-51
  enable secret pass
  service password-encryption
  no logging console
@@ -317,23 +317,23 @@ conf t
   exec-timeout 0 0
  int gi 0/0/0
   no shut
-  ip add 10.15.15.1 255.255.255.0
+  ip add 10.51.51.1 255.255.255.0
   desc INSIDE
  int gi 0/0/1
   no shut
-  ip add 200.0.0.15 255.255.255.0
+  ip add 200.0.0.51 255.255.255.0
   desc OUTSIDE
  int loopback 0
-  ip add 15.0.0.1 255.255.255.255
+  ip add 51.0.0.1 255.255.255.255
   desc VIRTUALIP
   exit
   
 !@ospf routing edge
  router ospf 1
-  router-id 15.0.0.1
+  router-id 51.0.0.1
   network 200.0.0.0 0.0.0.255 area 0
-  network 10.15.15.0 0.0.0.255 area 0
-  network 15.0.0.1 0.0.0.0 area 0
+  network 10.51.51.0 0.0.0.255 area 0
+  network 51.0.0.1 0.0.0.0 area 0
  int gi 0/0/0
   ip ospf network point-to-point
  end
@@ -342,9 +342,9 @@ conf t
 <br>
 
 ~~~
-!@BABA-15
+!@BABA-51
 conf t
- hostname coreBaba-15
+ hostname coreBaba-51
  enable secret pass
  service password-encryption
  no logging console
@@ -360,22 +360,22 @@ conf t
  int gi 0/1
   no shut
   no switchport
-  ip add 10.15.15.4 255.255.255.0
+  ip add 10.51.51.4 255.255.255.0
  int vlan 1
   no shut
-  ip add 10.15.1.4 255.255.255.0
+  ip add 10.51.1.4 255.255.255.0
   desc DEFAULT-VLAN
  int vlan 10
   no shut
-  ip add 10.15.10.4 255.255.255.0
+  ip add 10.51.10.4 255.255.255.0
   desc WIFI-VLAN
  int vlan 50
   no shut
-  ip add 10.15.50.4 255.255.255.0
+  ip add 10.51.50.4 255.255.255.0
   desc CCTV-VLAN
  int vlan 100
   no shut
-  ip add 10.15.100.4 255.255.255.0
+  ip add 10.51.100.4 255.255.255.0
   desc VOICE-VLAN
   exit
  !
@@ -414,8 +414,8 @@ conf t
  !
  ip routing
  router ospf 1
-  router-id 10.15.15.4
-  network 10.15.0.0 0.0.255.255 area 0
+  router-id 10.51.51.4
+  network 10.51.0.0 0.0.255.255 area 0
  int gi 0/1
   ip ospf network point-to-point
   end
@@ -424,9 +424,9 @@ conf t
 <br>
 
 ~~~
-!@CUCM-15
+!@CUCM-51
 conf t
- hostname CUCM-15
+ hostname CUCM-51
  enable secret pass
  service password-encryption
  no logging console
@@ -441,12 +441,12 @@ conf t
   exec-timeout 0 0
  int fa 0/0
   no shut
-  ip add 10.15.100.8 255.255.255.0
+  ip add 10.51.100.8 255.255.255.0
   exit
  ip routing
  router ospf 1
-  router-id 10.15.100.8
-  network 10.15.100.0 0.0.0.255 area 0
+  router-id 10.51.100.8
+  network 10.51.100.0 0.0.0.255 area 0
   end
 ~~~
 
@@ -463,8 +463,8 @@ conf t
 ~~~
 !@UTM-PH
 conf t
- ip route 10.0.0.0 255.0.0.0 10.15.1.4
- ip route 200.0.0.0 255.255.255.0 10.15.1.4
+ ip route 10.0.0.0 255.0.0.0 10.51.1.4
+ ip route 200.0.0.0 255.255.255.0 10.51.1.4
  end
 ~~~
 
@@ -473,7 +473,7 @@ conf t
 <br>
 
 
-### Task 1: Prevent traffic only from VLAN 100 (CUCM) to reach UTM-PH (10.15.1.11)
+### Task 1: Prevent traffic only from VLAN 100 (CUCM) to reach UTM-PH (10.51.1.11)
 ~~~
 !@UTM-PH
 config t
@@ -497,9 +497,9 @@ show ip access-list int g4
 Verify:
 ~~~
 !@CUCM
-ping 10.15.1.11
+ping 10.51.1.11
 
-telnet 10.15.1.11
+telnet 10.51.1.11
 ~~~
 
 
@@ -523,7 +523,7 @@ conf t
 &nbsp;
 
 
-### Task 2: Prevent traffic coming from the PC (10.15.1.10) and the EDGE Router from reaching UTM-PH (10.15.1.11)
+### Task 2: Prevent traffic coming from the PC (10.51.1.10) and the EDGE Router from reaching UTM-PH (10.51.1.11)
 ~~~
 !@UTM-PH
 config t
@@ -561,7 +561,7 @@ conf t
 &nbsp;
 
 
-### Task 3: Allow the PC (10.15.1.10) to access HTTP, SSH, and ICMP of UTM-PH (10.15.1.11)
+### Task 3: Allow the PC (10.51.1.10) to access HTTP, SSH, and ICMP of UTM-PH (10.51.1.11)
 
 ` www.fbi.gov  vs  neu.edu.ph `
 
@@ -573,7 +573,7 @@ Make the UTM Router Vulnerable
 ~~~
 !@UTM-PH
 config t
- ip host www.bet11.com 10.15.1.11
+ ip host www.bet11.com 10.51.1.11
  service finger
  service tcp-small-servers
  service udp-small-servers
@@ -584,7 +584,7 @@ config t
   no auto-reg-ephone
   max-ephones 5
   max-dn 20
-  ip source-address 10.15.1.11 port 2000
+  ip source-address 10.51.1.11 port 2000
   exit
  voice service voip
   allow-connections h323 to sip
@@ -598,7 +598,7 @@ config t
    registrar server expires max 600 min 60
  voice register global
   mode cme
-  source-address 10.15.1.11 port 5060
+  source-address 10.51.1.11 port 5060
   max-dn 12
   max-pool 12
   authenticate register
@@ -704,17 +704,17 @@ conf t
 
 
 ### [Activity] On the EDGE Router create an extended ACL named FWP4 with the following:
-- Allow Pings destined for your PC (10.15.1.10)  
+- Allow Pings destined for your PC (10.51.1.10)  
 - Allow Telnet access to your CoreBABA's VLAN 1 SVI,  
 - but make sure to block everything else  
 
 <br>
 
 ~~~
-!@EDGE-15
+!@EDGE-51
 config t
  ip access-list extended FWP5
-  permit  icmp  any  host 10.15.1.10             log 
+  permit  icmp  any  host 10.51.1.10             log 
   permit  tcp   any  host  ___.___.___.___  eq  ____  log
   
   
@@ -731,7 +731,7 @@ show ip access-list int g0/0/1
 
 Remove the ACL
 ~~~
-!@EDGE-15
+!@EDGE-51
 conf t
  int gi 0/0/1
   no ip access-group FWP5 in
@@ -851,7 +851,7 @@ conf t
   ip nat inside
  !
  ip access-list extended NAT
-  deny ip 11.11.11.96 0.0.0.31  21.21.21.208 0.0.0.15
+  deny ip 11.11.11.96 0.0.0.31  21.21.21.208 0.0.0.51
   deny ip 11.11.11.96 0.0.0.31  22.22.22.192 0.0.0.63
   exit
  !
@@ -897,15 +897,15 @@ adduser admin
 
 | SERVER      | INSIDE PORT | OUTSIDE IP     | OUTSIDE PORT |
 | ---         | ---         | ---            | ---          |
-| CoreTAAS    | 23          | 200.0.0.15 | 2023         |
-| CoreBABA    | 23          | 200.0.0.15 | 4023         |
-| CUCM        | 23          | 200.0.0.15 | 8020         |
+| CoreTAAS    | 23          | 200.0.0.51 | 2023         |
+| CoreBABA    | 23          | 200.0.0.51 | 4023         |
+| CUCM        | 23          | 200.0.0.51 | 8020         |
 
 
 <br>
 
 ~~~
-!@EDGE-15
+!@EDGE-51
 conf t
  int g0/0/0
   ip nat inside
@@ -916,7 +916,7 @@ conf t
  !
  !
  ip access-list extended NAT-POLICY
-  permit ip 10.15.0.0  0.0.255.255  any
+  permit ip 10.51.0.0  0.0.255.255  any
   exit
  !
  !
@@ -930,13 +930,13 @@ conf t
 
 
 ~~~
-!@EDGE-15
+!@EDGE-51
 conf t
  no router ospf 1
  router ospf 1
-  router-id 15.0.0.1
-  network 10.15.15.0 0.0.0.255 area 0
-  network 15.0.0.1       0.0.0.0   area 0
+  router-id 51.0.0.1
+  network 10.51.51.0 0.0.0.255 area 0
+  network 51.0.0.1       0.0.0.0   area 0
   default-information originate always
   end
 ~~~
@@ -946,12 +946,12 @@ conf t
 
 
 ~~~
-!@EDGE-15
+!@EDGE-51
 conf t
- ip nat inside source static tcp  10.15.1.4  23  200.0.0.15  4023
+ ip nat inside source static tcp  10.51.1.4  23  200.0.0.51  4023
  !
- ip nat inside source static tcp  10.15.1.4  __  __.__.__.__     __
- ip nat inside source static tcp  10.15.1.4  __  __.__.__.__     __
+ ip nat inside source static tcp  10.51.1.4  __  __.__.__.__     __
+ ip nat inside source static tcp  10.51.1.4  __  __.__.__.__     __
  end
 ~~~
 
@@ -1252,9 +1252,9 @@ AmbientCapabilities=CAP_NET_BIND_SERVICE
 ### STEP 7. Set a Port Forwarding Rule for the Honeypot Server
 
 ~~~
-!@EDGE-15
+!@EDGE-51
 conf t
- ip nat inside source static tcp  10.15.1.11  6969  200.0.0.15  3306
+ ip nat inside source static tcp  10.51.1.11  6969  200.0.0.51  3306
  end
 ~~~
 
@@ -1367,12 +1367,12 @@ to enforce the access allowed by a policy.
 # Site to Site Connectivity
 
 ~~~
-!@EDGE-15
+!@EDGE-51
 conf t
  no router ospf 1
  router ospf 1
-  router-id 15.0.0.1
-  network 10.15.15.0 0.0.0.255 area 0
+  router-id 51.0.0.1
+  network 10.51.51.0 0.0.0.255 area 0
   default-information originate always
   end
 ~~~
@@ -1382,29 +1382,29 @@ conf t
 
 
 ~~~
-!@EDGE-15
+!@EDGE-51
 conf t
  no ip access-list extended NAT-POLICY
  ip access-list extended NAT-POLICY
-  deny ip 10.15.0.0 0.0.255.255 10.11.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.12.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.21.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.22.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.31.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.32.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.41.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.42.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.51.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.52.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.61.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.62.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.71.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.72.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.81.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.82.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.91.0.0 0.0.255.255
-  deny ip 10.15.0.0 0.0.255.255 10.92.0.0 0.0.255.255
-  no deny ip 10.15.0.0 0.0.255.255 10.15.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.11.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.12.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.21.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.22.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.31.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.32.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.41.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.42.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.51.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.52.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.61.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.62.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.71.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.72.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.81.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.82.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.91.0.0 0.0.255.255
+  deny ip 10.51.0.0 0.0.255.255 10.92.0.0 0.0.255.255
+  no deny ip 10.51.0.0 0.0.255.255 10.51.0.0 0.0.255.255
   permit ip any any
   end
 ~~~
@@ -1414,10 +1414,10 @@ conf t
 
 
 ~~~
-!@EDGE-15
+!@EDGE-51
 conf t
  int tun1
-  ip add 172.16.1.15 255.255.255.0
+  ip add 172.16.1.51 255.255.255.0
   tunnel source g0/0/1
   tunnel mode gre multipoint
   no shut
@@ -1443,7 +1443,7 @@ conf t
   ip nhrp map 172.16.1.82 200.0.0.82
   ip nhrp map 172.16.1.91 200.0.0.91
   ip nhrp map 172.16.1.92 200.0.0.92
-  no ip nhrp map 172.16.1.15 200.0.0.15
+  no ip nhrp map 172.16.1.51 200.0.0.51
   exit
  !
  !
@@ -1466,7 +1466,7 @@ conf t
  ip route 10.91.0.0 255.255.0.0 172.16.1.91 252
  ip route 10.92.0.0 255.255.0.0 172.16.1.92 252
  !
- no ip route 10.15.0.0 255.255.0.0 172.16.1.15 252
+ no ip route 10.51.0.0 255.255.0.0 172.16.1.51 252
  end
 ~~~
 
@@ -2404,7 +2404,7 @@ conf t
  !
  no  ip access-list extended NAT
  ip access-list extended NAT
-  deny ip 11.11.11.0 0.0.0.31  21.21.21.208 0.0.0.15
+  deny ip 11.11.11.0 0.0.0.31  21.21.21.208 0.0.0.51
   deny ip 11.11.11.0 0.0.0.31  22.22.22.192 0.0.0.63
   permit ip any any
  !
@@ -2414,7 +2414,7 @@ conf t
  !
  no  ip access-list extended NETOPS-PBR
  ip access-list extended NETOPS-PBR
-  deny ip 11.11.11.0 0.0.0.31  21.21.21.208 0.0.0.15
+  deny ip 11.11.11.0 0.0.0.31  21.21.21.208 0.0.0.51
   deny ip 11.11.11.0 0.0.0.31  22.22.22.192 0.0.0.63
   permit ip host 11.11.11.100 any
   exit
@@ -2443,7 +2443,7 @@ conf t
   ip nat inside
  !
  ip access-list extended NAT
-  deny ip 21.21.21.208 0.0.0.15  11.11.11.96 0.0.0.31
+  deny ip 21.21.21.208 0.0.0.51  11.11.11.96 0.0.0.31
   deny ip 22.22.22.192 0.0.0.63  11.11.11.96 0.0.0.31
   permit ip any any
  !
@@ -2525,7 +2525,7 @@ fold -b -w 72 rivan.pub
 ~~~
 !@UTM-PH
 conf t
- username rivan privilege 15 secret pass
+ username rivan privilege 51 secret pass
  ip ssh pubkey-chain
   username rivan
    key-string
