@@ -286,11 +286,11 @@ ip route add 0.0.0.0/0 via 11.11.11.113 dev ens224
 
 ### Jobs of a firewall
 
-1. &nbsp; 
-2. &nbsp; 
-3. &nbsp; 
-4. &nbsp; 
-5. &nbsp; 
+1. &nbsp; traffic Filtering
+2. &nbsp; transport security (vpn, dmvpn, ztna)
+3. &nbsp; threat prevention (ngfw)
+4. &nbsp; network segmentation (nat,proxy,dmz)
+5. &nbsp; monitoring logging and alerts 
 
 
 <br>
@@ -523,14 +523,15 @@ conf t
 &nbsp;
 
 
-### Task 2: Prevent traffic coming from the PC (10.51.1.10) and the EDGE Router from reaching UTM-PH (10.51.1.11)
+### Task 2: Prevent traffic coming from the PC (10.51.1.10) and the (10.51.51.1) EDGE Router from reaching UTM-PH (10.51.1.11)
+
 ~~~
 !@UTM-PH
 config t
  no ip access-list extended FWP2
  ip access-list extended FWP2
-  deny ip  __.__.__.__    __.__.__.__    __.__.__.__    __.__.__.__  log
-  
+  deny ip  host 10.51.1.12 host 10.51.1.22 log
+  deny ip  host 10.51.51.1 host 10.51.1.22 log
   permit ip any any
   exit
  !
